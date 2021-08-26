@@ -1,3 +1,8 @@
-compiling contract:
+compile contract:
 
 $ npx hardhat compile
+
+
+test:
+
+$ npx hardhat test
