@@ -101,9 +101,8 @@ contract Token {
 
         uint256 accountBalance = _balances[account];
         require(accountBalance >= amount, 'Burn amount exceeds balance');
-        unchecked {
-            _balances[account] = accountBalance - amount;
-        }
+
+        _balances[account] = accountBalance - amount;
         totalSupply -= amount;
 
         emit Transfer(account, address(0), amount);
