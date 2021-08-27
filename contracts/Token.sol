@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: ISC
-// Solidity files have to start with this pragma.
-// It will be used by the Solidity compiler to validate its version.
 pragma solidity ^0.8.4;
 
-// This is the main building block for smart contracts.
 contract Token {
     // Some string type variables to identify the token.
     // The `public` modifier makes a variable readable from outside the contract.
@@ -79,6 +76,39 @@ contract Token {
         return _balances[account];
     }
 
+    /** Creates `amount` tokens and assigns them to `account`, increasing
+     * the total supply.
+     *
+     * Emits a {Transfer} event with `from` set to the zero address.
+     */
+    function mint(address account, uint256 amount) external onlyOwner {
+        require(account != address(0), 'Cannot mint to zero address');
+
+        totalSupply += amount;
+        _balances[account] += amount;
+
+        emit Transfer(address(0), account, amount);
+    }
+
+    /**
+     *  Destroys `amount` tokens from `account`, reducing the
+     * total supply.
+     *
+     * Emits a {Transfer} event with `to` set to the zero address.
+     */
+    function burn(address account, uint256 amount) external onlyOwner {
+        require(account != address(0), 'Cannot burn from zero address');
+
+        uint256 accountBalance = _balances[account];
+        require(accountBalance >= amount, 'Burn amount exceeds balance');
+        unchecked {
+            _balances[account] = accountBalance - amount;
+        }
+        totalSupply -= amount;
+
+        emit Transfer(account, address(0), amount);
+    }
+
     function freeze(address account) external onlyOwner {
         _frozenAddresses[account] = true;
         emit Frozen(account);
@@ -94,8 +124,8 @@ contract Token {
     }
 
     /**
-     * @dev Allows the current owner to transfer control of the contract to a newOwner.
-     * @param newOwner The address to transfer ownership to.
+     * Allows the current owner to transfer control of the contract to a newOwner.
+     * newOwner The address to transfer ownership to.
      */
     function transferOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), 'New owner cannot be zero address');

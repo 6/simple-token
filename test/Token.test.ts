@@ -197,4 +197,69 @@ describe('Token contract', () => {
       expect(await token.owner()).toEqual(owner.address);
     });
   });
+
+  describe('mint', () => {
+    it('allows owner to mint more tokens to any recipient', async () => {
+      const [signer1] = signers;
+
+      const tx = await token.mint(signer1.address, 500);
+      expect(tx).toHaveEmittedWith(token, 'Transfer', [
+        constants.AddressZero,
+        signer1.address,
+        BigNumber.from(500),
+      ]);
+
+      expect(await token.balanceOf(signer1.address)).toEqual(BigNumber.from(500));
+    });
+
+    it('increases totalSupply by the minted amount', async () => {
+      await token.mint(signers[0].address, 500);
+      expect(await token.totalSupply()).toEqual(TOTAL_SUPPLY.add(500));
+    });
+
+    it('cannot be called by a non-owner', async () => {
+      const [signer1, signer2] = signers;
+
+      await expect(token.connect(signer1).mint(signer2.address, 500)).toBeRevertedWith(
+        'Must be owner to call this function',
+      );
+
+      expect(await token.balanceOf(signer2.address)).toEqual(BigNumber.from(0));
+    });
+  });
+
+  describe('burn', () => {
+    beforeEach(async () => {
+      const [signer1] = signers;
+      await token.transfer(signer1.address, 500);
+    });
+
+    it('allows owner to burn tokens from on any address', async () => {
+      const [signer1] = signers;
+
+      const tx = await token.burn(signer1.address, 100);
+      expect(tx).toHaveEmittedWith(token, 'Transfer', [
+        signer1.address,
+        constants.AddressZero,
+        BigNumber.from(100),
+      ]);
+
+      expect(await token.balanceOf(signer1.address)).toEqual(BigNumber.from(400));
+    });
+
+    it('decreases totalSupply by the burned amount', async () => {
+      await token.burn(signers[0].address, 500);
+      expect(await token.totalSupply()).toEqual(TOTAL_SUPPLY.sub(500));
+    });
+
+    it('cannot be called by a non-owner', async () => {
+      const [signer1, signer2] = signers;
+
+      await expect(token.connect(signer2).burn(signer1.address, 100)).toBeRevertedWith(
+        'Must be owner to call this function',
+      );
+
+      expect(await token.balanceOf(signer1.address)).toEqual(BigNumber.from(500));
+    });
+  });
 });
