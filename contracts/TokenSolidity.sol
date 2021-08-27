@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: ISC
 pragma solidity ^0.8.4;
 
-contract TokenSol {
+contract TokenSolidity {
     // Some string type variables to identify the token.
     // The `public` modifier makes a variable readable from outside the contract.
     string public name = "Simple Token";
