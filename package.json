@@ -6,8 +6,9 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "compile": "hardhat compile",
+    "compile:watch": "nodemon --watch \"contracts/**\" --ext \"sol\" --exec \"yarn compile\"",
     "deduplicate": "yarn-deduplicate && yarn install",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.json",
     "prettier:all": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|sol)\"",
     "test": "jest --config test/jest.config.js"
   },
@@ -41,6 +42,7 @@
     "hardhat": "^2.6.1",
     "husky": "^7.0.2",
     "jest": "^27.0.6",
+    "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "prettier-plugin-solidity": "^1.0.0-beta.17",
     "ts-jest": "^27.0.5",
