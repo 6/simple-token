@@ -138,7 +138,7 @@ describe('Token contract', () => {
       await token.transfer(signer1.address, 50);
 
       const freezeTx = await token.freeze(signer1.address);
-      expect(freezeTx).toHaveEmittedWith(token, 'Frozen', [signer1.address]);
+      expect(freezeTx).toHaveEmittedWith(token, 'Freeze', [signer1.address]);
 
       // Can't do any transfers after frozen:
       await expect(token.connect(signer1).transfer(signer2.address, 10)).toBeRevertedWith(
@@ -153,7 +153,7 @@ describe('Token contract', () => {
 
       // Once unfrozen, can transfer again:
       const unfreezeTx = await token.unfreeze(signer1.address);
-      expect(unfreezeTx).toHaveEmittedWith(token, 'Unfrozen', [signer1.address]);
+      expect(unfreezeTx).toHaveEmittedWith(token, 'Unfreeze', [signer1.address]);
       await token.connect(signer1).transfer(signer2.address, 10);
       await token.transfer(signer1.address, 100);
 

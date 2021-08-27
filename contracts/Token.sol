@@ -25,8 +25,8 @@ contract Token {
     }
 
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event Frozen(address indexed account);
-    event Unfrozen(address indexed account);
+    event Freeze(address indexed account);
+    event Unfreeze(address indexed account);
     event TransferOwnership(address indexed oldOwner, address indexed newOwner);
 
     /**
@@ -110,12 +110,12 @@ contract Token {
 
     function freeze(address account) external onlyOwner {
         _frozenAddresses[account] = true;
-        emit Frozen(account);
+        emit Freeze(account);
     }
 
     function unfreeze(address account) external onlyOwner {
         _frozenAddresses[account] = false;
-        emit Unfrozen(account);
+        emit Unfreeze(account);
     }
 
     function isFrozen(address account) external view returns (bool) {
