@@ -4,6 +4,6 @@
   "rules": {
     "compiler-version": "off",
     "func-visibility": ["error", { "ignoreConstructors": true }],
-    "quotes": ["error", "single"]
+    "quotes": "error"
   }
 }

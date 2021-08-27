@@ -4,8 +4,8 @@ pragma solidity ^0.8.4;
 contract Token {
     // Some string type variables to identify the token.
     // The `public` modifier makes a variable readable from outside the contract.
-    string public name = 'Simple Token';
-    string public symbol = 'SMPL';
+    string public name = "Simple Token";
+    string public symbol = "SMPL";
 
     // The fixed amount of tokens stored in an unsigned integer type variable.
     uint256 public totalSupply = 1000000000;
@@ -20,7 +20,7 @@ contract Token {
     mapping(address => bool) private _frozenAddresses;
 
     modifier onlyOwner() {
-        require(owner == msg.sender, 'Must be owner to call');
+        require(owner == msg.sender, "Must be owner to call");
         _;
     }
 
@@ -48,16 +48,16 @@ contract Token {
      * the contract.
      */
     function transfer(address to, uint256 amount) external {
-        require(to != address(0), 'Cannot transfer to zero address');
-        require(to != msg.sender, 'Cannot transfer to self');
-        require(amount > 0, 'Transfer amount must be >0');
-        require(!_frozenAddresses[msg.sender], 'Sender address is frozen');
-        require(!_frozenAddresses[to], 'Recipient address is frozen');
+        require(to != address(0), "Cannot transfer to zero address");
+        require(to != msg.sender, "Cannot transfer to self");
+        require(amount > 0, "Transfer amount must be >0");
+        require(!_frozenAddresses[msg.sender], "Sender address is frozen");
+        require(!_frozenAddresses[to], "Recipient address is frozen");
 
         // Check if the transaction sender has enough tokens.
         // If `require`'s first argument evaluates to `false` then the
         // transaction will revert.
-        require(_balances[msg.sender] >= amount, 'Not enough tokens');
+        require(_balances[msg.sender] >= amount, "Not enough tokens");
 
         // Transfer the amount.
         _balances[msg.sender] -= amount;
@@ -82,7 +82,7 @@ contract Token {
      * Emits a {Transfer} event with `from` set to the zero address.
      */
     function mint(address account, uint256 amount) external onlyOwner {
-        require(account != address(0), 'Cannot mint to zero address');
+        require(account != address(0), "Cannot mint to zero address");
 
         totalSupply += amount;
         _balances[account] += amount;
@@ -97,10 +97,10 @@ contract Token {
      * Emits a {Transfer} event with `to` set to the zero address.
      */
     function burn(address account, uint256 amount) external onlyOwner {
-        require(account != address(0), 'Cannot burn from zero address');
+        require(account != address(0), "Cannot burn from zero address");
 
         uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, 'Burn amount exceeds balance');
+        require(accountBalance >= amount, "Burn amount exceeds balance");
 
         _balances[account] = accountBalance - amount;
         totalSupply -= amount;
@@ -127,7 +127,7 @@ contract Token {
      * newOwner The address to transfer ownership to.
      */
     function transferOwnership(address newOwner) external onlyOwner {
-        require(newOwner != address(0), 'New owner cannot be zero address');
+        require(newOwner != address(0), "New owner cannot be zero address");
 
         address oldOwner = owner;
         owner = newOwner;
