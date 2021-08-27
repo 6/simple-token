@@ -17,7 +17,7 @@ contract Token {
     address public owner;
 
     // A mapping is a key/value map. Here we store each account balance.
-    mapping(address => uint256) balances;
+    mapping(address => uint256) private _balances;
 
     /**
      * Contract initialization.
@@ -27,7 +27,7 @@ contract Token {
     constructor() {
         // The totalSupply is assigned to transaction sender, which is the account
         // that is deploying the contract.
-        balances[msg.sender] = totalSupply;
+        _balances[msg.sender] = totalSupply;
         owner = msg.sender;
     }
 
@@ -44,11 +44,11 @@ contract Token {
         // Check if the transaction sender has enough tokens.
         // If `require`'s first argument evaluates to `false` then the
         // transaction will revert.
-        require(balances[msg.sender] >= amount, "Not enough tokens");
+        require(_balances[msg.sender] >= amount, "Not enough tokens");
 
         // Transfer the amount.
-        balances[msg.sender] -= amount;
-        balances[to] += amount;
+        _balances[msg.sender] -= amount;
+        _balances[to] += amount;
     }
 
     /**
@@ -58,6 +58,6 @@ contract Token {
      * state, which allows us to call it without executing a transaction.
      */
     function balanceOf(address account) external view returns (uint256) {
-        return balances[account];
+        return _balances[account];
     }
 }
