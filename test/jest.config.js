@@ -1,5 +1,3 @@
-const tsconfig = require('../tsconfig.json');
-
 module.exports = {
   rootDir: '../',
   transform: {
@@ -7,5 +5,5 @@ module.exports = {
   },
   clearMocks: true,
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['./test/setupJest.ts']
+  setupFilesAfterEnv: ['./test/setupJest.ts'],
 };

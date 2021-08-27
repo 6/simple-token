@@ -1,17 +1,17 @@
-import { ethers } from "hardhat";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { BigNumber, Contract, ContractFactory, Signer, constants } from "ethers";
+import { ethers } from 'hardhat';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { BigNumber, Contract, ContractFactory, constants } from 'ethers';
 
 const TOTAL_SUPPLY = BigNumber.from(1000000000);
 
-describe("Token contract", () => {
+describe('Token contract', () => {
   let TokenContract: ContractFactory;
   let token: Contract;
   let owner: SignerWithAddress;
   let signers: Array<SignerWithAddress>;
 
   beforeEach(async () => {
-    TokenContract = await ethers.getContractFactory("Token");
+    TokenContract = await ethers.getContractFactory('Token');
     token = await TokenContract.deploy();
     [owner, ...signers] = await ethers.getSigners();
   });
@@ -22,12 +22,12 @@ describe("Token contract", () => {
       expect(totalSupply).toEqual(TOTAL_SUPPLY);
     });
 
-    it("assigns total supply of tokens to the owner", async () => {
+    it('assigns total supply of tokens to the owner', async () => {
       const ownerBalance = await token.balanceOf(owner.address);
       expect(ownerBalance).toEqual(TOTAL_SUPPLY);
     });
 
-    it("sets the correct contract owner", async () => {
+    it('sets the correct contract owner', async () => {
       expect(await token.owner()).toEqual(owner.address);
     });
 
@@ -60,64 +60,57 @@ describe("Token contract", () => {
       const [signer1] = signers;
 
       const tx = await token.transfer(signer1.address, 50);
-      expect(tx)
-        .toHaveEmittedWith(token, 'Transfer', [owner.address, signer1.address, BigNumber.from(50)]);
+      expect(tx).toHaveEmittedWith(token, 'Transfer', [
+        owner.address,
+        signer1.address,
+        BigNumber.from(50),
+      ]);
     });
 
     it('reverts when insufficient balance', async () => {
       const [signer1] = signers;
       const initialOwnerBalance = await token.balanceOf(owner.address);
 
-      await expect(
-        token.connect(signer1).transfer(owner.address, 1)
-      ).toBeRevertedWith("Not enough tokens");
+      await expect(token.connect(signer1).transfer(owner.address, 1)).toBeRevertedWith(
+        'Not enough tokens',
+      );
 
       // Owner balance shouldn't have changed.
-      expect(await token.balanceOf(owner.address)).toEqual(
-        initialOwnerBalance
-      );
+      expect(await token.balanceOf(owner.address)).toEqual(initialOwnerBalance);
     });
 
     it('reverts when transferring 0 amount', async () => {
       const [signer1] = signers;
 
-      await expect(
-        token.transfer(signer1.address, 0)
-      ).toBeRevertedWith("Transfer amount must be greater than zero");
+      await expect(token.transfer(signer1.address, 0)).toBeRevertedWith(
+        'Transfer amount must be greater than zero',
+      );
     });
 
     it('reverts when transferring negative amount', async () => {
       const [signer1] = signers;
 
-      await expect(
-        token.transfer(signer1.address, -50)
-      ).toBeReverted();
+      await expect(token.transfer(signer1.address, -50)).toBeReverted();
     });
 
     it('reverts when sender is the zero address', async () => {
       const initialOwnerBalance = await token.balanceOf(owner.address);
 
-      await expect(
-        token.transfer(constants.AddressZero, 50)
-      ).toBeRevertedWith("Cannot transfer to zero address");
+      await expect(token.transfer(constants.AddressZero, 50)).toBeRevertedWith(
+        'Cannot transfer to zero address',
+      );
 
       // Owner balance shouldn't have changed.
-      expect(await token.balanceOf(owner.address)).toEqual(
-        initialOwnerBalance
-      );
+      expect(await token.balanceOf(owner.address)).toEqual(initialOwnerBalance);
     });
 
     it('reverts when recipient is self', async () => {
       const initialOwnerBalance = await token.balanceOf(owner.address);
 
-      await expect(
-        token.transfer(owner.address, 50)
-      ).toBeRevertedWith("Cannot transfer to self");
+      await expect(token.transfer(owner.address, 50)).toBeRevertedWith('Cannot transfer to self');
 
       // Owner balance shouldn't have changed.
-      expect(await token.balanceOf(owner.address)).toEqual(
-        initialOwnerBalance
-      );
+      expect(await token.balanceOf(owner.address)).toEqual(initialOwnerBalance);
     });
   });
 
@@ -145,24 +138,22 @@ describe("Token contract", () => {
       await token.transfer(signer1.address, 50);
 
       const freezeTx = await token.freeze(signer1.address);
-      expect(freezeTx)
-        .toHaveEmittedWith(token, 'Frozen', [signer1.address]);
+      expect(freezeTx).toHaveEmittedWith(token, 'Frozen', [signer1.address]);
 
       // Can't do any transfers after frozen:
-      await expect(
-        token.connect(signer1).transfer(signer2.address, 10)
-      ).toBeRevertedWith('Sender address is frozen');
+      await expect(token.connect(signer1).transfer(signer2.address, 10)).toBeRevertedWith(
+        'Sender address is frozen',
+      );
 
-      await expect(
-        token.transfer(signer1.address, 100)
-      ).toBeRevertedWith('Recipient address is frozen');
+      await expect(token.transfer(signer1.address, 100)).toBeRevertedWith(
+        'Recipient address is frozen',
+      );
 
       expect(await token.balanceOf(signer1.address)).toEqual(BigNumber.from(50));
 
       // Once unfrozen, can transfer again:
       const unfreezeTx = await token.unfreeze(signer1.address);
-      expect(unfreezeTx)
-        .toHaveEmittedWith(token, 'Unfrozen', [signer1.address]);
+      expect(unfreezeTx).toHaveEmittedWith(token, 'Unfrozen', [signer1.address]);
       await token.connect(signer1).transfer(signer2.address, 10);
       await token.transfer(signer1.address, 100);
 
@@ -172,22 +163,22 @@ describe("Token contract", () => {
     it('disallows non-owner from freezing/unfreezing', async () => {
       const [signer1, signer2] = signers;
 
-      await expect(
-        token.connect(signer1).freeze(signer2.address)
-      ).toBeRevertedWith('Must be owner to call this function');
+      await expect(token.connect(signer1).freeze(signer2.address)).toBeRevertedWith(
+        'Must be owner to call this function',
+      );
 
       expect(await token.isFrozen(signer2.address)).toEqual(false);
 
-      await expect(
-        token.connect(signer1).unfreeze(signer2.address)
-      ).toBeRevertedWith('Must be owner to call this function');
+      await expect(token.connect(signer1).unfreeze(signer2.address)).toBeRevertedWith(
+        'Must be owner to call this function',
+      );
 
       expect(await token.isFrozen(signer2.address)).toEqual(false);
     });
   });
 
   describe('transferOwnership', () => {
-    it('transfers ownership to the provided new owner', async() => {
+    it('transfers ownership to the provided new owner', async () => {
       const [signer1] = signers;
 
       const tx = await token.transferOwnership(signer1.address);
@@ -196,12 +187,12 @@ describe("Token contract", () => {
       expect(await token.owner()).toEqual(signer1.address);
     });
 
-    it('cannot be called by a non-owner', async() => {
+    it('cannot be called by a non-owner', async () => {
       const [signer1, signer2] = signers;
 
-      await expect(
-        token.connect(signer1).transferOwnership(signer2.address)
-      ).toBeRevertedWith('Must be owner to call this function');
+      await expect(token.connect(signer1).transferOwnership(signer2.address)).toBeRevertedWith(
+        'Must be owner to call this function',
+      );
 
       expect(await token.owner()).toEqual(owner.address);
     });

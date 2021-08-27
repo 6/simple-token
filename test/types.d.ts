@@ -1,6 +1,6 @@
 // TODO: why is this needed?
 
-import {BigNumber, Wallet, Contract} from 'ethers'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { BigNumber, Wallet, Contract } from 'ethers'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export type Numberish = number | string | BigNumber;
 
@@ -29,14 +29,12 @@ declare global {
 
       // emit matcher
       toHaveEmitted(contract: Contract, eventName: string): Promise<R>;
-      toHaveEmittedWith(
-        contract: Contract,
-        eventName: string,
-        expectedArgs: any[]
-      ): Promise<R>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toHaveEmittedWith(contract: Contract, eventName: string, expectedArgs: any[]): Promise<R>;
 
       // calledOnContract matchers
       toBeCalledOnContract(contract: Contract): R;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toBeCalledOnContractWith(contract: Contract, parameters: any[]): R;
     }
   }
