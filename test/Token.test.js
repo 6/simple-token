@@ -119,12 +119,12 @@ describe("Token contract", () => {
       expect(await token.isFrozen(signer1.address)).to.equal(false);
       expect(await token.isFrozen(signer2.address)).to.equal(false);
 
-      await token.adminFreeze(signer2.address);
+      await token.freeze(signer2.address);
 
       expect(await token.isFrozen(signer1.address)).to.equal(false);
       expect(await token.isFrozen(signer2.address)).to.equal(true);
 
-      await token.adminUnfreeze(signer2.address);
+      await token.unfreeze(signer2.address);
 
       expect(await token.isFrozen(signer1.address)).to.equal(false);
       expect(await token.isFrozen(signer2.address)).to.equal(false);
@@ -135,7 +135,7 @@ describe("Token contract", () => {
 
       await token.transfer(signer1.address, 50);
 
-      await token.adminFreeze(signer1.address);
+      await token.freeze(signer1.address);
 
       // Can't do any transfers after frozen:
       await expect(
@@ -149,27 +149,47 @@ describe("Token contract", () => {
       expect(await token.balanceOf(signer1.address)).to.equal(50);
 
       // Once unfrozen, can transfer again:
-      await token.adminUnfreeze(signer1.address);
+      await token.unfreeze(signer1.address);
       await token.connect(signer1).transfer(signer2.address, 10);
       await token.transfer(signer1.address, 100);
 
       expect(await token.balanceOf(signer1.address)).to.equal(140);
     });
 
-    it('disallows non-owner (admin) from freezing/unfreezing', async () => {
+    it('disallows non-owner from freezing/unfreezing', async () => {
       const [signer1, signer2] = signers;
 
       await expect(
-        token.connect(signer1).adminFreeze(signer2.address)
+        token.connect(signer1).freeze(signer2.address)
       ).to.be.revertedWith('Must be owner to call this function');
 
       expect(await token.isFrozen(signer2.address)).to.equal(false);
 
       await expect(
-        token.connect(signer1).adminUnfreeze(signer2.address)
+        token.connect(signer1).unfreeze(signer2.address)
       ).to.be.revertedWith('Must be owner to call this function');
 
       expect(await token.isFrozen(signer2.address)).to.equal(false);
+    });
+  });
+
+  describe('transferOwnership', () => {
+    it('transfers ownership to the provided new owner', async() => {
+      const [signer1] = signers;
+
+      await token.transferOwnership(signer1.address);
+
+      expect(await token.owner()).to.equal(signer1.address);
+    });
+
+    it('cannot be called by a non-owner', async() => {
+      const [signer1, signer2] = signers;
+
+      await expect(
+        token.connect(signer1).transferOwnership(signer2.address)
+      ).to.be.revertedWith('Must be owner to call this function');
+
+      expect(await token.owner()).to.equal(owner.address);
     });
   });
 });

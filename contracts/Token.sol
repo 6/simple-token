@@ -22,7 +22,7 @@ contract Token {
     // A mapping of frozen addresses.
     mapping(address => bool) private _frozenAddresses;
 
-    modifier adminOnly() {
+    modifier onlyOwner() {
         require(owner == msg.sender, "Must be owner to call this function");
         _;
     }
@@ -72,15 +72,24 @@ contract Token {
         return _balances[account];
     }
 
-    function adminFreeze(address account) external adminOnly {
+    function freeze(address account) external onlyOwner {
         _frozenAddresses[account] = true;
     }
 
-    function adminUnfreeze(address account) external adminOnly {
+    function unfreeze(address account) external onlyOwner {
         _frozenAddresses[account] = false;
     }
 
     function isFrozen(address account) external view returns (bool) {
         return _frozenAddresses[account];
+    }
+
+    /**
+     * @dev Allows the current owner to transfer control of the contract to a newOwner.
+     * @param newOwner The address to transfer ownership to.
+     */
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "New owner cannot be zero address");
+        owner = newOwner;
     }
 }
