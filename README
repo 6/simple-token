@@ -1,6 +1,6 @@
 compile contract:
 
-$ npx hardhat compile
+$ yarn compile
 
 
 test:

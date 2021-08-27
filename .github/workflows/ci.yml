@@ -45,4 +45,5 @@ jobs:
           exit 1
       - run: yarn check-types
       - run: yarn lint
+      - run: yarn compile
       - run: yarn test

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "check-types": "tsc --noEmit",
+    "compile": "hardhat compile",
     "deduplicate": "yarn-deduplicate && yarn install",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prettier:all": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|css)\"",
@@ -42,6 +43,7 @@
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.5",
+    "ts-node": "^10.2.1",
     "typescript": "~4.3.5",
     "yarn-deduplicate": "^3.1.0"
   }
