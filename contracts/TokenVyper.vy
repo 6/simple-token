@@ -16,6 +16,10 @@ event Transfer:
     receiver: indexed(address)
     value: uint256
 
+event TransferOwnership:
+    oldOwner: indexed(address)
+    newOwner: indexed(address)
+
 @external
 def __init__():
     self.owner = msg.sender
@@ -24,8 +28,12 @@ def __init__():
     self.totalSupply = 1000000000
     self.balanceOf[self.owner] = self.totalSupply
 
+@internal
+def assertOnlyOwner(sender: address):
+  assert sender == self.owner, "Must be owner to call"
+
 @external
-def transfer(to : address, amount : uint256):
+def transfer(to: address, amount: uint256):
     assert to != ZERO_ADDRESS, "Cannot transfer to zero address"
     assert to != msg.sender, "Cannot transfer to self"
     assert amount > 0, "Transfer amount must be >0"
@@ -38,3 +46,36 @@ def transfer(to : address, amount : uint256):
     self.balanceOf[to] += amount
 
     log Transfer(msg.sender, to, amount)
+
+@external
+def mint(account: address, amount: uint256):
+    self.assertOnlyOwner(msg.sender)
+    assert account != ZERO_ADDRESS, "Cannot mint to zero address"
+
+    self.totalSupply += amount
+    self.balanceOf[account] += amount
+
+    log Transfer(ZERO_ADDRESS, account, amount)
+
+@external
+def burn(account: address, amount: uint256):
+    self.assertOnlyOwner(msg.sender)
+    assert account != ZERO_ADDRESS, "Cannot burn from zero address"
+
+    accountBalance: uint256 = self.balanceOf[account]
+    assert accountBalance >= amount, "Burn amount exceeds balance"
+
+    self.balanceOf[account] = accountBalance - amount
+    self.totalSupply -= amount
+
+    log Transfer(account, ZERO_ADDRESS, amount)
+
+@external
+def transferOwnership(newOwner: address):
+    self.assertOnlyOwner(msg.sender)
+    assert newOwner != ZERO_ADDRESS, "New owner cannot be zero address"
+
+    oldOwner: address = self.owner
+    self.owner = newOwner
+
+    log TransferOwnership(oldOwner, newOwner)
