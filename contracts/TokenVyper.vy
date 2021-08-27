@@ -11,6 +11,8 @@ totalSupply: public(uint256)
 #       See: https://vyper.readthedocs.io/en/v0.1.0-beta.8/types.html?highlight=getter#mappings
 balanceOf: public(HashMap[address, uint256])
 
+isFrozen: public(HashMap[address, bool])
+
 event Transfer:
     sender: indexed(address)
     receiver: indexed(address)
@@ -19,6 +21,12 @@ event Transfer:
 event TransferOwnership:
     oldOwner: indexed(address)
     newOwner: indexed(address)
+
+event Freeze:
+    account: indexed(address)
+
+event Unfreeze:
+    account: indexed(address)
 
 @external
 def __init__():
@@ -37,9 +45,8 @@ def transfer(to: address, amount: uint256):
     assert to != ZERO_ADDRESS, "Cannot transfer to zero address"
     assert to != msg.sender, "Cannot transfer to self"
     assert amount > 0, "Transfer amount must be >0"
-    # TODO:
-    # require(!_frozenAddresses[msg.sender], "Sender address is frozen");
-    # require(!_frozenAddresses[to], "Recipient address is frozen");
+    assert self.isFrozen[msg.sender] == False, "Sender address is frozen"
+    assert self.isFrozen[to] == False, "Recipient address is frozen"
     assert self.balanceOf[msg.sender] >= amount, "Not enough tokens"
 
     self.balanceOf[msg.sender] -= amount
@@ -69,6 +76,18 @@ def burn(account: address, amount: uint256):
     self.totalSupply -= amount
 
     log Transfer(account, ZERO_ADDRESS, amount)
+
+@external
+def freeze(account: address):
+    self.assertOnlyOwner(msg.sender)
+    self.isFrozen[account] = True
+    log Freeze(account)
+
+@external
+def unfreeze(account: address):
+    self.assertOnlyOwner(msg.sender)
+    self.isFrozen[account] = False
+    log Unfreeze(account)
 
 @external
 def transferOwnership(newOwner: address):

@@ -114,6 +114,71 @@ describe('TokenVyper contract', () => {
     });
   });
 
+  describe('freeze / unfreeze', () => {
+    it('allows owner to freeze/unfreeze and address', async () => {
+      const [signer1, signer2] = signers;
+
+      expect(await token.isFrozen(signer1.address)).toEqual(false);
+      expect(await token.isFrozen(signer2.address)).toEqual(false);
+
+      await token.freeze(signer2.address);
+
+      expect(await token.isFrozen(signer1.address)).toEqual(false);
+      expect(await token.isFrozen(signer2.address)).toEqual(true);
+
+      await token.unfreeze(signer2.address);
+
+      expect(await token.isFrozen(signer1.address)).toEqual(false);
+      expect(await token.isFrozen(signer2.address)).toEqual(false);
+    });
+
+    it('disables transfers sent from/to a frozen address', async () => {
+      const [signer1, signer2] = signers;
+
+      await token.transfer(signer1.address, 50);
+
+      const freezeTx = await token.freeze(signer1.address);
+      expect(freezeTx).toHaveEmittedWith(token, 'Freeze', [signer1.address]);
+
+      // Can't do any transfers after frozen:
+      await expect(token.connect(signer1).transfer(signer2.address, 10)).toBeRevertedWith(
+        'Sender address is frozen',
+      );
+
+      await expect(token.transfer(signer1.address, 100)).toBeRevertedWith(
+        'Recipient address is frozen',
+      );
+
+      expect(await token.balanceOf(signer1.address)).toEqual(BigNumber.from(50));
+
+      // Once unfrozen, can transfer again:
+      const unfreezeTx = await token.unfreeze(signer1.address);
+      expect(unfreezeTx).toHaveEmittedWith(token, 'Unfreeze', [signer1.address]);
+      await token.connect(signer1).transfer(signer2.address, 10);
+      await token.transfer(signer1.address, 100);
+
+      expect(await token.balanceOf(signer1.address)).toEqual(BigNumber.from(140));
+    });
+
+    it('disallows non-owner from freezing/unfreezing', async () => {
+      const [signer1, signer2] = signers;
+
+      await expect(token.connect(signer1).freeze(signer2.address)).toBeRevertedWith(
+        'Must be owner to call',
+      );
+
+      const isFrozen = await token.isFrozen(signer2.address);
+      console.log({ isFrozen });
+      expect(isFrozen).toEqual(false);
+
+      await expect(token.connect(signer1).unfreeze(signer2.address)).toBeRevertedWith(
+        'Must be owner to call',
+      );
+
+      expect(await token.isFrozen(signer2.address)).toEqual(false);
+    });
+  });
+
   describe('transferOwnership', () => {
     it('transfers ownership to the provided new owner', async () => {
       const [signer1] = signers;
