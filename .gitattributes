@@ -1,0 +1,2 @@
+# Fix github syntax highlighting
+*.vy linguist-language=Python
