@@ -1,6 +1,8 @@
-simple-token
+Simple Token is an EVM-compatible token loosely inspired by ERC20.
 
-compile solidity contract:
+The contract is coded in both Solidity and Vyper to try out both languages.
+
+compile contracts:
 $ yarn compile
 
 run tests:
