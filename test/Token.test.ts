@@ -83,7 +83,7 @@ describe('Token contract', () => {
       const [signer1] = signers;
 
       await expect(token.transfer(signer1.address, 0)).toBeRevertedWith(
-        'Transfer amount must be greater than zero',
+        'Transfer amount must be >0',
       );
     });
 
@@ -164,13 +164,13 @@ describe('Token contract', () => {
       const [signer1, signer2] = signers;
 
       await expect(token.connect(signer1).freeze(signer2.address)).toBeRevertedWith(
-        'Must be owner to call this function',
+        'Must be owner to call',
       );
 
       expect(await token.isFrozen(signer2.address)).toEqual(false);
 
       await expect(token.connect(signer1).unfreeze(signer2.address)).toBeRevertedWith(
-        'Must be owner to call this function',
+        'Must be owner to call',
       );
 
       expect(await token.isFrozen(signer2.address)).toEqual(false);
@@ -191,7 +191,7 @@ describe('Token contract', () => {
       const [signer1, signer2] = signers;
 
       await expect(token.connect(signer1).transferOwnership(signer2.address)).toBeRevertedWith(
-        'Must be owner to call this function',
+        'Must be owner to call',
       );
 
       expect(await token.owner()).toEqual(owner.address);
@@ -221,7 +221,7 @@ describe('Token contract', () => {
       const [signer1, signer2] = signers;
 
       await expect(token.connect(signer1).mint(signer2.address, 500)).toBeRevertedWith(
-        'Must be owner to call this function',
+        'Must be owner to call',
       );
 
       expect(await token.balanceOf(signer2.address)).toEqual(BigNumber.from(0));
@@ -256,7 +256,7 @@ describe('Token contract', () => {
       const [signer1, signer2] = signers;
 
       await expect(token.connect(signer2).burn(signer1.address, 100)).toBeRevertedWith(
-        'Must be owner to call this function',
+        'Must be owner to call',
       );
 
       expect(await token.balanceOf(signer1.address)).toEqual(BigNumber.from(500));

@@ -20,7 +20,7 @@ contract Token {
     mapping(address => bool) private _frozenAddresses;
 
     modifier onlyOwner() {
-        require(owner == msg.sender, 'Must be owner to call this function');
+        require(owner == msg.sender, 'Must be owner to call');
         _;
     }
 
@@ -50,7 +50,7 @@ contract Token {
     function transfer(address to, uint256 amount) external {
         require(to != address(0), 'Cannot transfer to zero address');
         require(to != msg.sender, 'Cannot transfer to self');
-        require(amount > 0, 'Transfer amount must be greater than zero');
+        require(amount > 0, 'Transfer amount must be >0');
         require(!_frozenAddresses[msg.sender], 'Sender address is frozen');
         require(!_frozenAddresses[to], 'Recipient address is frozen');
 
