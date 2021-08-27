@@ -5,4 +5,4 @@ $ npx hardhat compile
 
 test:
 
-$ npx hardhat test
+$ yarn test

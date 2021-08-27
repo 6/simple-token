@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "check-types": "tsc --noEmit",
+    "deduplicate": "yarn-deduplicate && yarn install",
     "test": "jest --config test/jest.config.js"
   },
   "keywords": [],
@@ -18,6 +20,7 @@
     "ethers": "^5.4.5",
     "hardhat": "^2.6.1",
     "jest": "^27.0.6",
-    "ts-jest": "^27.0.5"
+    "ts-jest": "^27.0.5",
+    "yarn-deduplicate": "^3.1.0"
   }
 }
