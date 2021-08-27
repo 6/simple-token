@@ -69,6 +69,22 @@ describe("Token contract", () => {
       );
     });
 
+    it('reverts when transferring 0 amount', async () => {
+      const [signer1] = signers;
+
+      await expect(
+        token.transfer(signer1.address, 0)
+      ).to.be.revertedWith("Transfer amount must be greater than zero");
+    });
+
+    it('reverts when transferring negative amount', async () => {
+      const [signer1] = signers;
+
+      await expect(
+        token.transfer(signer1.address, -50)
+      ).to.be.reverted;
+    });
+
     it('reverts when sender is the zero address', async () => {
       const initialOwnerBalance = await token.balanceOf(owner.address);
 

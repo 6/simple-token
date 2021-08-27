@@ -40,6 +40,7 @@ contract Token {
     function transfer(address to, uint256 amount) external {
         require(to != address(0), "Cannot transfer to zero address");
         require(to != msg.sender, "Cannot transfer to self");
+        require(amount > 0, "Transfer amount must be greater than zero");
 
         // Check if the transaction sender has enough tokens.
         // If `require`'s first argument evaluates to `false` then the
