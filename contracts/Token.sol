@@ -7,8 +7,8 @@ pragma solidity ^0.8.4;
 contract Token {
     // Some string type variables to identify the token.
     // The `public` modifier makes a variable readable from outside the contract.
-    string public name = "Simple Token";
-    string public symbol = "SMPL";
+    string public name = 'Simple Token';
+    string public symbol = 'SMPL';
 
     // The fixed amount of tokens stored in an unsigned integer type variable.
     uint256 public totalSupply = 1000000000;
@@ -23,7 +23,7 @@ contract Token {
     mapping(address => bool) private _frozenAddresses;
 
     modifier onlyOwner() {
-        require(owner == msg.sender, "Must be owner to call this function");
+        require(owner == msg.sender, 'Must be owner to call this function');
         _;
     }
 
@@ -51,16 +51,16 @@ contract Token {
      * the contract.
      */
     function transfer(address to, uint256 amount) external {
-        require(to != address(0), "Cannot transfer to zero address");
-        require(to != msg.sender, "Cannot transfer to self");
-        require(amount > 0, "Transfer amount must be greater than zero");
-        require(!_frozenAddresses[msg.sender], "Sender address is frozen");
-        require(!_frozenAddresses[to], "Recipient address is frozen");
+        require(to != address(0), 'Cannot transfer to zero address');
+        require(to != msg.sender, 'Cannot transfer to self');
+        require(amount > 0, 'Transfer amount must be greater than zero');
+        require(!_frozenAddresses[msg.sender], 'Sender address is frozen');
+        require(!_frozenAddresses[to], 'Recipient address is frozen');
 
         // Check if the transaction sender has enough tokens.
         // If `require`'s first argument evaluates to `false` then the
         // transaction will revert.
-        require(_balances[msg.sender] >= amount, "Not enough tokens");
+        require(_balances[msg.sender] >= amount, 'Not enough tokens');
 
         // Transfer the amount.
         _balances[msg.sender] -= amount;
@@ -98,7 +98,7 @@ contract Token {
      * @param newOwner The address to transfer ownership to.
      */
     function transferOwnership(address newOwner) external onlyOwner {
-        require(newOwner != address(0), "New owner cannot be zero address");
+        require(newOwner != address(0), 'New owner cannot be zero address');
 
         address oldOwner = owner;
         owner = newOwner;
