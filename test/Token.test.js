@@ -29,6 +29,11 @@ describe("Token contract", () => {
     it("sets the correct contract owner", async () => {
       expect(await token.owner()).to.equal(owner.address);
     });
+
+    it('sets token name and symbol', async () => {
+      expect(await token.name()).to.equal('Simple Token');
+      expect(await token.symbol()).to.equal('SMPL');
+    });
   });
 
   describe('transfers', () => {

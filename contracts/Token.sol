@@ -7,8 +7,8 @@ pragma solidity ^0.8.7;
 contract Token {
     // Some string type variables to identify the token.
     // The `public` modifier makes a variable readable from outside the contract.
-    string public name = "Genesis";
-    string public symbol = "GEN";
+    string public name = "Simple Token";
+    string public symbol = "SMPL";
 
     // The fixed amount of tokens stored in an unsigned integer type variable.
     uint256 public totalSupply = 1000000000;
