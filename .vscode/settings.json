@@ -18,5 +18,5 @@
     "**/node_modules": true
   },
   "typescript.validate.enable": true,
-  "solidity.compileUsingRemoteVersion": "v0.8.7+commit.e28d00a7"
+  "solidity.compileUsingRemoteVersion": "v0.8.4+commit.c7e474f2"
 }
