@@ -19,6 +19,14 @@ contract Token {
     // A mapping is a key/value map. Here we store each account balance.
     mapping(address => uint256) private _balances;
 
+    // A mapping of frozen addresses.
+    mapping(address => bool) private _frozenAddresses;
+
+    modifier adminOnly() {
+        require(owner == msg.sender, "Must be owner to call this function");
+        _;
+    }
+
     /**
      * Contract initialization.
      *
@@ -41,6 +49,8 @@ contract Token {
         require(to != address(0), "Cannot transfer to zero address");
         require(to != msg.sender, "Cannot transfer to self");
         require(amount > 0, "Transfer amount must be greater than zero");
+        require(!_frozenAddresses[msg.sender], "Sender address is frozen");
+        require(!_frozenAddresses[to], "Recipient address is frozen");
 
         // Check if the transaction sender has enough tokens.
         // If `require`'s first argument evaluates to `false` then the
@@ -60,5 +70,17 @@ contract Token {
      */
     function balanceOf(address account) external view returns (uint256) {
         return _balances[account];
+    }
+
+    function adminFreeze(address account) external adminOnly {
+        _frozenAddresses[account] = true;
+    }
+
+    function adminUnfreeze(address account) external adminOnly {
+        _frozenAddresses[account] = false;
+    }
+
+    function isFrozen(address account) external view returns (bool) {
+        return _frozenAddresses[account];
     }
 }

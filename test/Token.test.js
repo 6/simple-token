@@ -111,4 +111,65 @@ describe("Token contract", () => {
       );
     });
   });
+
+  describe('freeze / unfreeze', () => {
+    it('allows owner to freeze/unfreeze and address', async () => {
+      const [signer1, signer2] = signers;
+
+      expect(await token.isFrozen(signer1.address)).to.equal(false);
+      expect(await token.isFrozen(signer2.address)).to.equal(false);
+
+      await token.adminFreeze(signer2.address);
+
+      expect(await token.isFrozen(signer1.address)).to.equal(false);
+      expect(await token.isFrozen(signer2.address)).to.equal(true);
+
+      await token.adminUnfreeze(signer2.address);
+
+      expect(await token.isFrozen(signer1.address)).to.equal(false);
+      expect(await token.isFrozen(signer2.address)).to.equal(false);
+    });
+
+    it('disables transfers sent from/to a frozen address', async () => {
+      const [signer1, signer2] = signers;
+
+      await token.transfer(signer1.address, 50);
+
+      await token.adminFreeze(signer1.address);
+
+      // Can't do any transfers after frozen:
+      await expect(
+        token.connect(signer1).transfer(signer2.address, 10)
+      ).to.be.revertedWith('Sender address is frozen');
+
+      await expect(
+        token.transfer(signer1.address, 100)
+      ).to.be.revertedWith('Recipient address is frozen');
+
+      expect(await token.balanceOf(signer1.address)).to.equal(50);
+
+      // Once unfrozen, can transfer again:
+      await token.adminUnfreeze(signer1.address);
+      await token.connect(signer1).transfer(signer2.address, 10);
+      await token.transfer(signer1.address, 100);
+
+      expect(await token.balanceOf(signer1.address)).to.equal(140);
+    });
+
+    it('disallows non-owner (admin) from freezing/unfreezing', async () => {
+      const [signer1, signer2] = signers;
+
+      await expect(
+        token.connect(signer1).adminFreeze(signer2.address)
+      ).to.be.revertedWith('Must be owner to call this function');
+
+      expect(await token.isFrozen(signer2.address)).to.equal(false);
+
+      await expect(
+        token.connect(signer1).adminUnfreeze(signer2.address)
+      ).to.be.revertedWith('Must be owner to call this function');
+
+      expect(await token.isFrozen(signer2.address)).to.equal(false);
+    });
+  });
 });
