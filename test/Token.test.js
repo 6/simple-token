@@ -31,17 +31,23 @@ describe("Token contract", () => {
     });
   });
 
-  describe('transfer', () => {
-    it('transfers tokens between accounts', async () => {
+  describe('transfers', () => {
+    it('transfers tokens between accounts, updating balances correctly', async () => {
       const [signer1, signer2] = signers;
+
+      expect(await token.balanceOf(owner.address)).to.equal(TOTAL_SUPPLY);
+      expect(await token.balanceOf(signer1.address)).to.equal(0);
+      expect(await token.balanceOf(signer2.address)).to.equal(0);
 
       // Transfer 50 tokens from owner to signer1
       await token.transfer(signer1.address, 50);
+      expect(await token.balanceOf(owner.address)).to.equal(TOTAL_SUPPLY - 50);
       expect(await token.balanceOf(signer1.address)).to.equal(50);
 
-      // Transfer 50 tokens from signer1 to signer2
-      await token.connect(signer1).transfer(signer2.address, 50);
-      expect(await token.balanceOf(signer2.address)).to.equal(50);
+      // Transfer 30 tokens from signer1 to signer2
+      await token.connect(signer1).transfer(signer2.address, 30);
+      expect(await token.balanceOf(signer1.address)).to.equal(20);
+      expect(await token.balanceOf(signer2.address)).to.equal(30);
     });
 
     it('reverts when insufficient balance', async () => {
@@ -59,15 +65,29 @@ describe("Token contract", () => {
     });
 
     it('reverts when sender is the zero address', async () => {
+      const initialOwnerBalance = await token.balanceOf(owner.address);
+
       await expect(
         token.transfer(constants.ZERO_ADDRESS, 50)
       ).to.be.revertedWith("Cannot transfer to zero address");
+
+      // Owner balance shouldn't have changed.
+      expect(await token.balanceOf(owner.address)).to.equal(
+        initialOwnerBalance
+      );
     });
 
     it('reverts when recipient is self', async () => {
+      const initialOwnerBalance = await token.balanceOf(owner.address);
+
       await expect(
         token.transfer(owner.address, 50)
       ).to.be.revertedWith("Cannot transfer to self");
+
+      // Owner balance shouldn't have changed.
+      expect(await token.balanceOf(owner.address)).to.equal(
+        initialOwnerBalance
+      );
     });
   });
 });
