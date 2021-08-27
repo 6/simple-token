@@ -27,6 +27,11 @@ contract Token {
         _;
     }
 
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Frozen(address indexed account);
+    event Unfrozen(address indexed account);
+    event TransferOwnership(address indexed oldOwner, address indexed newOwner);
+
     /**
      * Contract initialization.
      *
@@ -60,6 +65,8 @@ contract Token {
         // Transfer the amount.
         _balances[msg.sender] -= amount;
         _balances[to] += amount;
+
+        emit Transfer(msg.sender, to, amount);
     }
 
     /**
@@ -74,10 +81,12 @@ contract Token {
 
     function freeze(address account) external onlyOwner {
         _frozenAddresses[account] = true;
+        emit Frozen(account);
     }
 
     function unfreeze(address account) external onlyOwner {
         _frozenAddresses[account] = false;
+        emit Unfrozen(account);
     }
 
     function isFrozen(address account) external view returns (bool) {
@@ -90,6 +99,10 @@ contract Token {
      */
     function transferOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "New owner cannot be zero address");
+
+        address oldOwner = owner;
         owner = newOwner;
+
+        emit TransferOwnership(oldOwner, newOwner);
     }
 }

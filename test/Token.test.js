@@ -55,6 +55,16 @@ describe("Token contract", () => {
       expect(await token.balanceOf(signer2.address)).to.equal(30);
     });
 
+    it('emits a Transfer event', async () => {
+      const [signer1] = signers;
+
+      await expect(
+        token.transfer(signer1.address, 50)
+      )
+        .to.emit(token, 'Transfer')
+        .withArgs(owner.address, signer1.address, 50);
+    });
+
     it('reverts when insufficient balance', async () => {
       const [signer1] = signers;
       const initialOwnerBalance = await token.balanceOf(owner.address);
@@ -135,7 +145,11 @@ describe("Token contract", () => {
 
       await token.transfer(signer1.address, 50);
 
-      await token.freeze(signer1.address);
+      await expect(
+        token.freeze(signer1.address)
+      )
+        .to.emit(token, 'Frozen')
+        .withArgs(signer1.address);
 
       // Can't do any transfers after frozen:
       await expect(
@@ -149,7 +163,11 @@ describe("Token contract", () => {
       expect(await token.balanceOf(signer1.address)).to.equal(50);
 
       // Once unfrozen, can transfer again:
-      await token.unfreeze(signer1.address);
+      await expect(
+        token.unfreeze(signer1.address)
+      )
+        .to.emit(token, 'Unfrozen')
+        .withArgs(signer1.address);
       await token.connect(signer1).transfer(signer2.address, 10);
       await token.transfer(signer1.address, 100);
 
@@ -177,7 +195,11 @@ describe("Token contract", () => {
     it('transfers ownership to the provided new owner', async() => {
       const [signer1] = signers;
 
-      await token.transferOwnership(signer1.address);
+      await expect(
+        token.transferOwnership(signer1.address)
+      )
+        .to.emit(token, 'TransferOwnership')
+        .withArgs(owner.address, signer1.address);
 
       expect(await token.owner()).to.equal(signer1.address);
     });
