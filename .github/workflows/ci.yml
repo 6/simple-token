@@ -44,6 +44,6 @@ jobs:
           printf  "duplicates found: \n\n%s" "$DUPE_LIST"
           exit 1
       - run: yarn check-types
-      - run: yarn lint
+      - run: yarn lint:ci
       - run: yarn compile
       - run: yarn test

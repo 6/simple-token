@@ -8,7 +8,8 @@
     "compile": "hardhat compile",
     "compile:watch": "nodemon --watch \"contracts/**\" --ext \"sol\" --exec \"yarn compile\"",
     "deduplicate": "yarn-deduplicate && yarn install",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.json",
+    "lint": "eslint . --cache --ext .js,.jsx,.ts,.tsx,.json",
+    "lint:ci": "eslint . --ext .js,.jsx,.ts,.tsx,.json",
     "prettier:all": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|sol)\"",
     "test": "jest --config test/jest.config.js"
   },
