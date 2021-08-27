@@ -1,8 +1,7 @@
-compile contract:
+simple-token
 
+compile solidity contract:
 $ yarn compile
 
-
-test:
-
+run tests:
 $ yarn test
