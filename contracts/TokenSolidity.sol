@@ -14,10 +14,10 @@ contract TokenSolidity {
     address public owner;
 
     // A mapping is a key/value map. Here we store each account balance.
-    mapping(address => uint256) private _balances;
+    mapping(address => uint256) public balanceOf;
 
     // A mapping of frozen addresses.
-    mapping(address => bool) private _frozenAddresses;
+    mapping(address => bool) public isFrozen;
 
     modifier onlyOwner() {
         require(owner == msg.sender, "Must be owner to call");
@@ -37,7 +37,7 @@ contract TokenSolidity {
     constructor() {
         // The totalSupply is assigned to transaction sender, which is the account
         // that is deploying the contract.
-        _balances[msg.sender] = totalSupply;
+        balanceOf[msg.sender] = totalSupply;
         owner = msg.sender;
     }
 
@@ -51,29 +51,19 @@ contract TokenSolidity {
         require(to != address(0), "Cannot transfer to zero address");
         require(to != msg.sender, "Cannot transfer to self");
         require(amount > 0, "Transfer amount must be >0");
-        require(!_frozenAddresses[msg.sender], "Sender address is frozen");
-        require(!_frozenAddresses[to], "Recipient address is frozen");
+        require(!isFrozen[msg.sender], "Sender address is frozen");
+        require(!isFrozen[to], "Recipient address is frozen");
 
         // Check if the transaction sender has enough tokens.
         // If `require`'s first argument evaluates to `false` then the
         // transaction will revert.
-        require(_balances[msg.sender] >= amount, "Not enough tokens");
+        require(balanceOf[msg.sender] >= amount, "Not enough tokens");
 
         // Transfer the amount.
-        _balances[msg.sender] -= amount;
-        _balances[to] += amount;
+        balanceOf[msg.sender] -= amount;
+        balanceOf[to] += amount;
 
         emit Transfer(msg.sender, to, amount);
-    }
-
-    /**
-     * Read only function to retrieve the token balance of a given account.
-     *
-     * The `view` modifier indicates that it doesn't modify the contract's
-     * state, which allows us to call it without executing a transaction.
-     */
-    function balanceOf(address account) external view returns (uint256) {
-        return _balances[account];
     }
 
     /** Creates `amount` tokens and assigns them to `account`, increasing
@@ -85,7 +75,7 @@ contract TokenSolidity {
         require(account != address(0), "Cannot mint to zero address");
 
         totalSupply += amount;
-        _balances[account] += amount;
+        balanceOf[account] += amount;
 
         emit Transfer(address(0), account, amount);
     }
@@ -98,28 +88,22 @@ contract TokenSolidity {
      */
     function burn(address account, uint256 amount) external onlyOwner {
         require(account != address(0), "Cannot burn from zero address");
+        require(balanceOf[account] >= amount, "Burn amount exceeds balance");
 
-        uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "Burn amount exceeds balance");
-
-        _balances[account] = accountBalance - amount;
+        balanceOf[account] -= amount;
         totalSupply -= amount;
 
         emit Transfer(account, address(0), amount);
     }
 
     function freeze(address account) external onlyOwner {
-        _frozenAddresses[account] = true;
+        isFrozen[account] = true;
         emit Freeze(account);
     }
 
     function unfreeze(address account) external onlyOwner {
-        _frozenAddresses[account] = false;
+        isFrozen[account] = false;
         emit Unfreeze(account);
-    }
-
-    function isFrozen(address account) external view returns (bool) {
-        return _frozenAddresses[account];
     }
 
     /**
