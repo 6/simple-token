@@ -13,6 +13,7 @@
     "lint:sol": "solhint 'contracts/**/*.sol'",
     "lint:ts": "eslint . --ext .js,.ts,.json",
     "prettier:all": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|sol)\"",
+    "security": "solium --dir contracts --no-soliumignore",
     "test": "jest --config test/jest.config.js"
   },
   "keywords": [],
@@ -43,6 +44,7 @@
     "eslint-plugin-prettier": "^3.4.1",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.5",
+    "ethlint": "^1.2.5",
     "hardhat": "^2.6.1",
     "husky": "^7.0.2",
     "jest": "^27.0.6",
@@ -51,6 +53,7 @@
     "prettier-plugin-solidity": "^1.0.0-beta.17",
     "solhint": "^3.3.6",
     "solhint-plugin-prettier": "^0.0.5",
+    "solium-plugin-security": "^0.1.1",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "typescript": "~4.3.5",
