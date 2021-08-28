@@ -1,4 +1,6 @@
-async function main() {
+import { ethers } from 'hardhat';
+
+const main = async () => {
   const [deployer] = await ethers.getSigners();
 
   console.log('Deploying contracts with the account:', deployer.address);
@@ -9,7 +11,7 @@ async function main() {
   const token = await TokenContractFactory.deploy();
 
   console.log('Token address:', token.address);
-}
+};
 
 main()
   .then(() => process.exit(0))
