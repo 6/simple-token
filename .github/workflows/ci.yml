@@ -48,3 +48,4 @@ jobs:
       - run: yarn security
       - run: yarn compile
       - run: yarn test
+      - run: yarn deploy:hardhat

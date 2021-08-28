@@ -8,6 +8,8 @@
     "compile": "hardhat compile",
     "compile:watch": "nodemon --watch \"contracts/**\" --ext \"sol,vy\" --exec \"yarn compile\"",
     "deduplicate": "yarn-deduplicate && yarn install",
+    "deploy": "hardhat run scripts/deploy.js",
+    "deploy:hardhat": "yarn deploy --network hardhat",
     "lint": "yarn lint:ts --cache && yarn lint:sol",
     "lint:ci": "yarn lint:ts && yarn lint:sol",
     "lint:sol": "solhint 'contracts/**/*.sol'",
