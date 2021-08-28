@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import { waffleJest } from '@ethereum-waffle/jest';
 
 jest.setTimeout(10000);
