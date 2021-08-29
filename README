@@ -8,6 +8,9 @@ $ yarn compile
 run tests:
 $ yarn test
 
-deployed and verified on ETH testnets:
+deployed and verified on testnets:
 - kovan: https://kovan.etherscan.io/address/0x9d09675f0f0aaaf4b824eacf5ba7f97528798847#code
 - rinkeby: https://rinkeby.etherscan.io/address/0xE152608C60A120C769278Be89253739E0eBa5d32#code
+- bsc: https://testnet.bscscan.com/address/0x10E11093c2963cE9743e73D6934Ff8BeA0d91766#code
+- ftm: https://testnet.ftmscan.com/address/0x10e11093c2963ce9743e73d6934ff8bea0d91766#code
+- polygon: https://mumbai.polygonscan.com/address/0x10E11093c2963cE9743e73D6934Ff8BeA0d91766#code

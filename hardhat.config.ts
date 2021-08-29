@@ -16,6 +16,22 @@ const publicNetworks = PRIVATE_KEY
         url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_RINKEBY_API_KEY}`,
         accounts: [PRIVATE_KEY],
       },
+      bsctestnet: {
+        url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+        chainId: 97,
+        accounts: [PRIVATE_KEY],
+      },
+      ftmtestnet: {
+        url: 'https://rpc.testnet.fantom.network',
+        chainId: 4002,
+        accounts: [PRIVATE_KEY],
+      },
+      polygontestnet: {
+        url: 'https://matic-mumbai.chainstacklabs.com',
+        chainId: 80001,
+        accounts: [PRIVATE_KEY],
+        gasPrice: 8000000000, // https://github.com/nomiclabs/hardhat/issues/1828#issuecomment-906757428
+      },
     }
   : {};
 
