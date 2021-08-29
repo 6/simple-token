@@ -4,16 +4,30 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { ALCHEMY_KOVAN_API_KEY, ALCHEMY_RINKEBY_API_KEY, PRIVATE_KEY } = process.env;
+const {
+  ALCHEMY_GOERLI_API_KEY,
+  ALCHEMY_KOVAN_API_KEY,
+  ALCHEMY_RINKEBY_API_KEY,
+  ALCHEMY_ROPSTEN_API_KEY,
+  PRIVATE_KEY,
+} = process.env;
 
 const publicNetworks = PRIVATE_KEY
   ? {
+      goerli: {
+        url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_GOERLI_API_KEY}`,
+        accounts: [PRIVATE_KEY],
+      },
       kovan: {
         url: `https://eth-kovan.alchemyapi.io/v2/${ALCHEMY_KOVAN_API_KEY}`,
         accounts: [PRIVATE_KEY],
       },
       rinkeby: {
         url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_RINKEBY_API_KEY}`,
+        accounts: [PRIVATE_KEY],
+      },
+      ropsten: {
+        url: `https://eth-ropsten.alchemyapi.io/v2/${ALCHEMY_ROPSTEN_API_KEY}`,
         accounts: [PRIVATE_KEY],
       },
       bsctestnet: {

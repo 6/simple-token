@@ -9,6 +9,7 @@ run tests:
 $ yarn test
 
 deployed and verified on testnets:
+- goerli: https://goerli.etherscan.io/address/0xf5632Acfb82420870d20cCd3c72a6F9fa9F14237#code
 - kovan: https://kovan.etherscan.io/address/0x9d09675f0f0aaaf4b824eacf5ba7f97528798847#code
 - rinkeby: https://rinkeby.etherscan.io/address/0xE152608C60A120C769278Be89253739E0eBa5d32#code
 - bsc: https://testnet.bscscan.com/address/0x10E11093c2963cE9743e73D6934Ff8BeA0d91766#code
